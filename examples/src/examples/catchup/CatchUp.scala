@@ -1,9 +1,9 @@
 package examples.catchup
 
 import examples.catchup._
-import react.events._
-import react._
-import macro.SignalMacro.{SignalM => Signal}
+import rescala.events._
+import rescala._
+import makro.SignalMacro.{SignalM => Signal}
 import swing.{ Panel, MainFrame, SimpleSwingApplication }
 import java.awt.{ Color, Graphics2D, Dimension }
 import java.awt.Point
@@ -13,18 +13,20 @@ import java.awt.Font
 import java.awt.Rectangle
 
 
-object CatchUpStarter {
-  def main(args: Array[String]) {	
-    val app = new CatchUp
-    app.main(args)
+object CatchUp extends SimpleSwingApplication {
+  lazy val application = new CatchUp
+  def top = application.frame
+  
+  override def main(args: Array[String]) {
+    super.main(args)
     while (true) {
+      Swing onEDTWait { application.tick() }
       Thread sleep 50
-      app.tick()
     }
   }
 }
 
-class CatchUp extends SimpleSwingApplication {
+class CatchUp {
   
   val Max_X = 800
   val Max_Y = 700
@@ -74,7 +76,6 @@ class CatchUp extends SimpleSwingApplication {
   
   
   // GUI
-  def top = frame
   val frame: MainFrame = new MainFrame {
     title = "Catch up!"
     resizable = false
@@ -96,17 +97,17 @@ class CatchUp extends SimpleSwingApplication {
       override def paintComponent(g: Graphics2D) {
         val fontMetrics = g.getFontMetrics(myFont)
         g.setColor(java.awt.Color.DARK_GRAY)        
-        g.fill(catchBox.getValue)
-        if(caught.getValue)
+        g.fill(catchBox.get)
+        if(caught.get)
           g.setColor(java.awt.Color.RED)
-        g.fill(upBox.getValue)
+        g.fill(upBox.get)
         g.setColor(java.awt.Color.WHITE)
         g.setFont(myFont)
-        g.drawString("CATCH", catchBox.getValue.getX.toInt, catchBox.getValue.getY.toInt + SizeY - 5)
-        g.drawString("UP", upBox.getValue.getX.toInt, upBox.getValue.getY.toInt + SizeY - 5)
+        g.drawString("CATCH", catchBox.get.getX.toInt, catchBox.get.getY.toInt + SizeY - 5)
+        g.drawString("UP", upBox.get.getX.toInt, upBox.get.getY.toInt + SizeY - 5)
         
         g.setColor(new Color(200, 100, 50))
-        g.drawString(scoreString.getVal, Max_X / 2 - 100, 40)
+        g.drawString(scoreString.get, Max_X / 2 - 100, 40)
       }
     }
   }

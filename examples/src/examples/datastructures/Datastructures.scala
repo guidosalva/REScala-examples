@@ -2,11 +2,9 @@ package examples.datastructures
 
 
 
-import react.events.ImperativeEvent
-import react.SignalSynt
-import react.Var
-import react.Signal
-import macro.SignalMacro.{SignalM => Signal}
+import rescala.events.ImperativeEvent
+import rescala._
+import makro.SignalMacro.{SignalM => Signal}
 import scala.collection.immutable.Queue
 import scala.collection.immutable.Stack
 
@@ -28,7 +26,7 @@ class SQueue[T] {
 	// methods mutating the state of the SQueue
 	def enqueue(elem : T) = _queue() = _queue().enqueue(elem)
 	def dequeue() : T = {
-	  val (first : T, tail : Queue[T]) = _queue().dequeue
+	  val (first, tail) : (T, Queue[T]) = _queue().dequeue
 	  _queue() = tail
 	  return first
 	}
@@ -58,7 +56,7 @@ class SStack[T] {
 	// methods mutating the state of the SQueue
 	def push(elem : T) = _stack() = _stack().push(elem)
 	def pop() : T = {
-	  val (out : T, rest : Stack[T]) = _stack().pop2
+	  val (out, rest) : (T, Stack[T]) = _stack().pop2
 	  _stack() = rest
 	  return out
 	}

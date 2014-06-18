@@ -1,15 +1,15 @@
 package examples.continuous
 
-import react.events.ImperativeEvent
-import react.SignalSynt
-import react.Var
-import react.Signal
-import macro.SignalMacro.{SignalM => Signal}
-import react.time.Timer
+import rescala.events.ImperativeEvent
+import rescala.SignalSynt
+import rescala.Var
+import rescala.Signal
+import makro.SignalMacro.{SignalM => Signal}
+import rescala.commons.time._
 
 
 object ContinuousTest extends Application {
-  val timer = Timer.create(0)
+  val timer = Timer(0)
   
   timer.after(5.0) += { _ => println("5 seconds have passed") }
   

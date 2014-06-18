@@ -1,11 +1,11 @@
 package examples.pong.ui
 
 import examples.pong._
-import react.events.ImperativeEvent
-import react.SignalSynt
-import react.Var
-import react.Signal
-import macro.SignalMacro.{ SignalM => Signal }
+import rescala.events.ImperativeEvent
+import rescala.SignalSynt
+import rescala.Var
+import rescala.Signal
+import makro.SignalMacro.{ SignalM => Signal }
 import swing.{ Panel, MainFrame, SimpleSwingApplication }
 import java.awt.{ Color, Graphics2D, Dimension }
 import java.awt.Point
@@ -19,21 +19,23 @@ import java.awt.Font
  * Only the file Pong.scala needs to be changed.
  */
 
-object PongStarter {
-  def main(args: Array[String]) {
-     /* Uncomment to enable logging: */
-	//react.ReactiveEngine.log.enableAllLogging
-    
-    val app = new PongWindow
-    app.main(args)
+object PongStarter extends SimpleSwingApplication {
+  /* Uncomment to enable logging: */
+  //react.ReactiveEngine.log.enableAllLogging
+  
+  lazy val application = new PongWindow
+  def top = application.frame
+  
+  override def main(args: Array[String]) {
+    super.main(args)
     while (true) {
+	  Swing onEDTWait { application.tick() }
       Thread sleep 20
-      app.tick()
     }
   }
 }
 
-class PongWindow extends SimpleSwingApplication {
+class PongWindow {
 
   val tick = new ImperativeEvent[Unit]
   tick += { _: Unit => frame.repaint() }
@@ -42,7 +44,6 @@ class PongWindow extends SimpleSwingApplication {
   val ball = new Pong(tick, mouse)
 
   // drawing code
-  def top = frame
   val frame: MainFrame = new MainFrame {
     title = "Pong"
     resizable = false
@@ -56,23 +57,23 @@ class PongWindow extends SimpleSwingApplication {
       val scoreFont = new Font("Tahoma", java.awt.Font.PLAIN, 32)
       override def paintComponent(g: Graphics2D) {
         g.setColor(java.awt.Color.DARK_GRAY)
-        g.fillOval(ball.x.getVal, ball.y.getVal, Ball.Size, Ball.Size)
+        g.fillOval(ball.x.get, ball.y.get, Ball.Size, Ball.Size)
         
-        g.fillRect(ball.leftRacket.area.getVal.x, 
-        		   ball.leftRacket.area.getVal.y,
-        		   ball.leftRacket.area.getVal.width,
-        		   ball.leftRacket.area.getVal.height
+        g.fillRect(ball.leftRacket.area.get.x, 
+        		   ball.leftRacket.area.get.y,
+        		   ball.leftRacket.area.get.width,
+        		   ball.leftRacket.area.get.height
             )
-        g.fillRect(ball.rightRacket.area.getVal.x, 
-        		   ball.rightRacket.area.getVal.y,
-        		   ball.rightRacket.area.getVal.width,
-        		   ball.rightRacket.area.getVal.height
+        g.fillRect(ball.rightRacket.area.get.x, 
+        		   ball.rightRacket.area.get.y,
+        		   ball.rightRacket.area.get.width,
+        		   ball.rightRacket.area.get.height
             )        
             
         
         g.setColor(new Color(200, 100, 50))
         g.setFont(scoreFont)
-        g.drawString(ball.score.getVal, Pong.Max_X / 2 - 50, 40)
+        g.drawString(ball.score.get, Pong.Max_X / 2 - 50, 40)
       }
     }
   }

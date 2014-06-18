@@ -1,14 +1,29 @@
 package examples.miscellanea
 
-import react._
-import macro.SignalMacro.{SignalM => Signal}
-import swing.{Panel, MainFrame, SimpleSwingApplication}
+import rescala._
+import makro.SignalMacro.{SignalM => Signal}
+import swing.{Swing, Panel, MainFrame, SimpleSwingApplication}
 import java.awt.{Graphics2D, Dimension}
 import java.awt.Point
 import scala.collection.mutable.ListBuffer
 
-
 object PulsingCircle extends SimpleSwingApplication {
+  lazy val application = new PulsingCircle
+  def top = application.frame
+  
+  override def main(args: Array[String]) {
+    super.main(args)
+    while (true) {
+	  Swing onEDTWait {
+	    application.base() += 1
+        application.frame.repaint
+      }
+      Thread sleep 20
+    }
+  }
+}
+
+class PulsingCircle {
   /*
   class Point(val x: Double,val y: Double) {
     def move(delta: Delta) = new Point(x + delta.x, y + delta.y)
@@ -28,7 +43,7 @@ object PulsingCircle extends SimpleSwingApplication {
   
   class Oval(center: Signal[Point], radius: Signal[Int]) {
     toDraw += ((g: Graphics2D) => 
-      {g.fillOval(center.getVal.x,center.getVal.y, radius.getVal, radius.getVal)})
+      {g.fillOval(center.get.x,center.get.y, radius.get, radius.get)})
     
     override def toString = "Circle("+ center + "," + radius +")"
   }
@@ -47,19 +62,7 @@ object PulsingCircle extends SimpleSwingApplication {
   val point4 = Signal{ new Point(160+ time(), 160+time())}
   new Oval(point4, time)
   
- 
 
-  
-  override def main(args: Array[String]){
-    super.main(args)
-    while (true) { {      
-	  frame.repaint
-        Thread sleep 20
-        base()= base.getVal + 1
-      }
-    }
-  }
-  
   
   // drawing code
   def top = frame  

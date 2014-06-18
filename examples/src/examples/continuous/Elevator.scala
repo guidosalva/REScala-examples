@@ -1,13 +1,14 @@
 package examples.continuous
 
 import examples.elevator._
-import react.events._
-import react.SignalSynt
-import react.Var
-import react.Signal
-import macro.SignalMacro.{SignalM => Signal}
+import rescala.events._
+import rescala.SignalSynt
+import rescala.Var
+import rescala.Signal
+import makro.SignalMacro.{SignalM => Signal}
 import scala.swing._
 import examples.datastructures._
+import rescala.commons.time._
 
 
 class Elevator(val nFloors : Int) {
@@ -28,7 +29,7 @@ class Elevator(val nFloors : Int) {
 	callToFloor += {queue enqueue _}
 	
 	// create a timer
-	val time = Timer.create(0)
+	val time = Timer(0)
 	
 	// Define Signals describing state and behavior of the elevator
 	val destination = Signal {
