@@ -1,25 +1,27 @@
 package examples.bouncing
 
-import react.events._
-import react._
-import macro.SignalMacro.{SignalM => Signal}
+import rescala.events._
+import rescala._
+import makro.SignalMacro.{SignalM => Signal}
 import swing.{Panel, MainFrame, SimpleSwingApplication}
 import java.awt.{Color, Graphics2D, Dimension}
 import java.awt.Point
 import scala.swing.Swing
 
-object SignalVersionStart {
-	def main(args: Array[String]){
-		val app = new SignalVersionFrame
-		app.main(args)
-		while (true) {      
-			Thread sleep 20
-			app.tick() += 1
-		}
-	}
+object SignalVersion extends SimpleSwingApplication {
+  lazy val application = new SignalVersion
+  def top = application.frame
+  
+  override def main(args: Array[String]) {
+    super.main(args)
+    while (true) {
+	  Swing onEDTWait { application.tick() += 1 }
+      Thread sleep 20
+    }
+  }
 }
 
-class SignalVersionFrame extends SimpleSwingApplication {
+class SignalVersion {
   val Size = 50
   val Max_X = 600
   val Max_Y = 600
@@ -41,15 +43,14 @@ class SignalVersionFrame extends SimpleSwingApplication {
 	if ((d / width) % 2 == 0) d % width else width - d % width
   }
   
-  tick.toSignal.changed += ((_ : Int) => frame.repaint)
+  tick.changed += ((_ : Int) => frame.repaint)
   
-  // drawing code
-  def top = frame  
+  // drawing code 
   val frame = new MainFrame {
     contents = new Panel() {
       preferredSize = new Dimension(600, 600)
       override def paintComponent(g: Graphics2D) {
-	    g.fillOval(x.getValue, y.getValue, Size, Size)
+	    g.fillOval(x.get, y.get, Size, Size)
       }
     }
   }

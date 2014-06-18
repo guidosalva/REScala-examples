@@ -1,25 +1,27 @@
 package examples.bouncing
 
-import react.events._
-import react._
-import macro.SignalMacro.{SignalM => Signal}
+import rescala.events._
+import rescala._
+import makro.SignalMacro.{SignalM => Signal}
 import swing.{Panel, MainFrame, SimpleSwingApplication}
 import java.awt.{Color, Graphics2D, Dimension}
 import java.awt.Point
 import scala.swing.Swing
 
-object SwitchVersionStart {
-	def main(args: Array[String]){
-		val app = new SwitchVersionFrame
-		app.main(args)
-		while (true) {
-			Thread sleep 20
-			app.tick()
-		}
-	}
+object SwitchVersion extends SimpleSwingApplication {
+  lazy val application = new SwitchVersion
+  def top = application.frame
+  
+  override def main(args: Array[String]) {
+    super.main(args)
+    while (true) {
+	  Swing onEDTWait { application.tick() }
+      Thread sleep 20
+    }
+  }
 }
 
-class SwitchVersionFrame extends SimpleSwingApplication {
+class SwitchVersion {
   val Size = 50
   val Max_X = 600
   val Max_Y = 600
@@ -30,10 +32,10 @@ class SwitchVersionFrame extends SimpleSwingApplication {
   
   
   // Using switch
-  import react.conversions.SignalConversions._
+  import rescala.conversions.SignalConversions._
   
-  val x: Signal[Int] = tick.fold(initPosition.x) {(pos, _) => pos + speedX.getVal}
-  val y: Signal[Int] = tick.fold(initPosition.y) {(pos, _) => pos + speedY.getVal}
+  val x: Signal[Int] = tick.fold(initPosition.x) {(pos, _) => pos + speedX.get}
+  val y: Signal[Int] = tick.fold(initPosition.y) {(pos, _) => pos + speedY.get}
   
   val xBounce = x.changed && (x => x < 0 || x + Size > Max_X)
   val yBounce = y.changed && (y => y < 0 || y + Size > Max_Y)
@@ -44,12 +46,11 @@ class SwitchVersionFrame extends SimpleSwingApplication {
   tick += {_: Unit => frame.repaint()}
   
   // drawing code
-  def top = frame  
   val frame = new MainFrame {
     contents = new Panel() {
       preferredSize = new Dimension(600, 600)
       override def paintComponent(g: Graphics2D) {
-	    g.fillOval(x.getVal, y.getVal, Size, Size)
+	    g.fillOval(x.get, y.get, Size, Size)
       }
     }    
   }
