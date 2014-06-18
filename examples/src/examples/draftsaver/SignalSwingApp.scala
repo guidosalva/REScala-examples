@@ -15,15 +15,15 @@ import scala.swing.event.ButtonClicked
 import scala.swing.event.Key
 import scala.swing.event.KeyReleased
 import javax.swing.BorderFactory
-import react.Signal
-import macro.SignalMacro.{ SignalM => Signal }
-import react.events.ImperativeEvent
+import rescala.Signal
+import makro.SignalMacro.{ SignalM => Signal }
+import rescala.events.ImperativeEvent
 
 // Wrap a bit of Swing, as if it were an FRP library
 trait ReactiveText {
   def text_=(s: String)
   def text_=(value: Signal[String]) {
-    this.text_=(value.getValue)
+    this.text_=(value.get)
     value.changed += { (t: String) => this.text_=(t) }
   }
 }
@@ -76,12 +76,8 @@ object SignalSwingApp extends SimpleSwingApplication {
     val ctrlSPressed = new ImperativeEvent[Unit]()
     val saveEvent = saveButton.clicked.dropParam || ctrlSPressed
 
-    // TODO why doesn't this version work!?
-//    val savedTime = saveEvent.map((_: Unit) => Calendar.getInstance().getTime().toString())
-//    lastSavedLabel.text = Signal { "Last Saved: " + savedTime.latest("")() }
-    // this version works
-    val savedTime = saveEvent.map((_: Unit) => Calendar.getInstance().getTime().toString()).latest("")
-    lastSavedLabel.text = Signal { "Last Saved: " + savedTime() }
+    val savedTime = saveEvent.map((_: Unit) => Calendar.getInstance().getTime().toString())
+    lastSavedLabel.text = Signal { "Last Saved: " + savedTime.latest("")() }
 
     val savedText = saveEvent.map((_: Unit) => textArea.text)
 
