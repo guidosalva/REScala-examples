@@ -10,7 +10,7 @@ object SnapshotTest extends App {
 	
 	// import rescala.conversions.SignalConversions._
 	
-	val speed : Signal[Double] = Signal { 3.0 }
+	val speed : Signal[Time] = Signal { 3.0 }
 	val position = simulationTime integral speed // 3.0
 	val sampled = position snapshot sampleTime.tick
 	
