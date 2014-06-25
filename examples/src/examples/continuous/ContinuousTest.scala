@@ -15,7 +15,7 @@ object ContinuousTest extends Application {
   
   timer.after(10) += { _ =>
     val local = timer.localTime
-    local.changed += {(t : Double) => println("The local time after 10 seconds is is " + t)}
+    local.changed += {(t : Time) => println("The local time after 10 seconds is is " + t)}
   }
 
   Timer.runAll
