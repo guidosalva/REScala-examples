@@ -11,7 +11,7 @@ import rescala.Signal
 import makro.SignalMacro.{SignalM => Signal}
 import rescala.commons.time._
 
-object ElevatorApplication extends Application {
+object ElevatorApplication extends App {
   val elevator = new Elevator(4)
   val app = new ElevatorFrame(elevator)
   app.main(Array())

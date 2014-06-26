@@ -83,7 +83,7 @@ class Elevator(val nFloors : Int) {
 	}
 }
 
-object Test extends Application {
+object Test extends App {
   val e = new Elevator(3)
   e callToFloor 2
   e callToFloor 2

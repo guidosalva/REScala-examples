@@ -5,7 +5,7 @@ import rescala.Var
 import rescala.Signal
 import makro.SignalMacro.{SignalM => Signal}
 
-object EventWindows extends Application {
+object EventWindows extends App {
 	
     val e = new ImperativeEvent[Double]    
     
