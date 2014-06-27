@@ -8,7 +8,7 @@ import makro.SignalMacro.{SignalM => Signal}
 import rescala.commons.time._
 
 
-object ContinuousTest extends Application {
+object ContinuousTest extends App {
   val timer = Timer(0)
   
   timer.after(5.0) += { _ => println("5 seconds have passed") }
